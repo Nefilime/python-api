@@ -13,6 +13,9 @@ jobs:
     permissions:
       packages: write
       contents: read
+    outputs:
+      IMAGE_ID: ${{ steps.push.outputs.IMAGE_ID }}
+      VERSION: ${{ steps.push.outputs.VERSION }}
 
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +49,10 @@ jobs:
     permissions:
       packages: read
     steps:
-      - run: echo image_id ${{ steps.push.outputs.IMAGE_ID }}:${{ steps.push.outputs.VERSION }}
+      - run: echo image_id $IMAGE_ID:$VERSION
+        env:
+          IMAGE_ID: ${{needs.build.outputs.IMAGE_ID}}
+          VERSION: ${{needs.build.outputs.VERSION}}
       #- name: Run Trivy vulnerability scanner
       #  uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
       #  with:
