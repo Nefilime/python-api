@@ -7,8 +7,9 @@ env:
   IMAGE_NAME: python-api
 
 jobs:
-  push:
-    runs-on: ubuntu-latest
+  build:
+    name: Build and Push Image
+    runs-on: ubuntu-20.04
     permissions:
       packages: write
       contents: read
@@ -21,6 +22,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push image
+        id: push
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
@@ -35,3 +37,24 @@ jobs:
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+          
+  secyrity:
+    name: Security Check
+    needs: build
+    runs-on: ubuntu-20.04
+    permissions:
+      packages: read
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: '${{ steps.push.outputs.IMAGE_ID }}:${{ steps.push.outputs.VERSION }}'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
