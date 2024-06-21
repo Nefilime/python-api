@@ -36,6 +36,7 @@ jobs:
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          echo image $IMAGE_ID:$VERSION
           #docker push $IMAGE_ID:$VERSION
           
   secyrity:
