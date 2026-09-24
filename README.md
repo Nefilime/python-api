@@ -1,4 +1,4 @@
-[![Build Docker Image CI](https://github.com/Nefilime/python-api/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Nefilime/python-api/actions/workflows/docker-image.yml)
+[![Docker Build](https://github.com/Nefilime/python-api/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/Nefilime/python-api/actions/workflows/docker-publish.yml)
 ## Overview
 
 A super simple RESTful api created using Flask. The idea is to have a simple api that can be used with pipeline demos and proof of concepts.
