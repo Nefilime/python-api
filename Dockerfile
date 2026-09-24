@@ -2,4 +2,5 @@ FROM python:3.12.4-slim
 WORKDIR /python-api
 COPY . .
 RUN pip install -r requirements.txt
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+ENV API_PORT=8000
+CMD [ "python", "app.py"]
